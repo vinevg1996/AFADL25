@@ -1,0 +1,24 @@
+- name: vm1_open 13
+  hosts: vm1
+  become: yes
+  tasks:
+    - name: Start netcat listener using async
+      shell: nc -lk 12345 >> rm_12345.txt
+      async: 1
+      poll: 0
+      ignore_errors: true
+
+- name: Wait to ensure listener is up
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait 3 seconds
+      pause:
+        seconds: 3
+
+- name: vm1_send 12
+  hosts: vm1
+  tasks:
+    - name: Send Hello_0 message
+      shell: echo "Hello_0" | nc -w 2 127.0.0.1 12345
+      ignore_errors: yes

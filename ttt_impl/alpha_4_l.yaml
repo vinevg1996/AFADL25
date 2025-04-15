@@ -1,0 +1,80 @@
+- name: vm1_open 1
+  hosts: vm1
+  become: yes
+  tasks:
+  - name: vm1_open 1_1
+    shell: netstat -an | grep 12345
+    register: netcat_check_vm2_0
+    async: 10
+    poll: 1
+    ignore_errors: yes
+
+  - name: vm1_open 1_2
+    shell: nohup nc -lk 12345 >> /tmp/received_message_12345_0.txt &
+    async: 10
+    poll: 1
+    ignore_errors: true
+
+- name: vm1_wait 2
+  hosts: vm1
+  tasks:
+  - name: vm1_wait 2_1
+    pause:
+      seconds: 38
+
+- name: vm1_allow 1
+  hosts: vm1
+  become: yes
+  tasks:
+  - name: vm1_allow 1_1
+    ignore_errors: yes
+    command: iptables -D INPUT -s 10.0.0.42 -j DROP
+
+- name: vm1_wait 2
+  hosts: vm1
+  tasks:
+  - name: vm1_wait 2_1
+    pause:
+      seconds: 35
+
+- name: vm1_send 1
+  hosts: vm1
+  tasks:
+  - name: vm1_send 1_1
+    shell: echo "Hello_0" | nc -w 2 10.0.0.42 12345
+    ignore_errors: yes
+
+- name: vm2_close 1
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_close 1_1
+    shell: "lsof -i :12345 -t"
+    register: nc_pid_0
+    async: 10
+    poll: 1
+    ignore_errors: yes
+
+  - name: vm2_close 1_2
+    shell: "kill -9 {{ nc_pid_0.stdout }}"
+    async: 10
+    poll: 1
+    ignore_errors: yes
+    when: nc_pid_0.stdout != ""
+
+- name: vm1_deny 1
+  hosts: vm1
+  become: yes
+  tasks:
+  - name: vm1_deny 1_1
+    command: iptables -C INPUT -s 10.0.0.42 -j DROP
+    register: rule_check0
+    async: 10
+    poll: 1
+    ignore_errors: yes
+
+  - name: vm1_deny 1_2
+    command: iptables -A INPUT -s 10.0.0.42 -j DROP
+    async: 10
+    poll: 1
+    ignore_errors: yes
