@@ -1,0 +1,51 @@
+#(open,40)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 40
+
+- name: vm2_open 1
+  hosts: vm2
+  become: yes
+  tasks:
+    - name: Start netcat listener
+      shell: nc -lk 12345 >> rm_12345_l.txt
+      async: 900
+      poll: 0
+      ignore_errors: true
+
+#(allow,17)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 17
+
+- name: vm2_allow 2
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_allow
+    ignore_errors: yes
+    command: iptables -D INPUT -s 10.0.0.42 -j DROP
+
+#(send,37)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 37
+
+- name: vm1_send 3
+  hosts: vm1
+  tasks:
+  - name: vm1_send
+    shell: echo "Hello_0" | nc -w 2 10.0.0.51 12345
+    ignore_errors: yes

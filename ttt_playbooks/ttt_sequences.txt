@@ -1,0 +1,18 @@
+ttt_left = {
+    alpha1_left = (open,38),(open,19),(allow,15),(open,41),(allow,37),(close,41),(open,42),(deny,44),(close,19),(allow,28),(allow,42),(close,38),(deny,45),(close,14),(deny,40),(send,15)
+    alpha2_left = (open,38),(deny,19),(send,13)
+    alpha3_left = (allow,28),(send,37)
+    alpha4_left = (open,38),(allow,15),(send,35)
+}
+ttt_mean = {
+    alpha1_mean = (open,39),(open,20),(allow,16),(open,42),(allow,38),(close,42),(open,43),(deny,46),(close,20),(allow,34),(allow,43),(close,39),(deny,54),(close,15),(deny,41),(send,16)
+    alpha2_mean = (open,39),(deny,20),(send,14)
+    alpha3_mean = (allow,34),(send,38)
+    alpha4_mean = (open,39),(allow,16),(send,36)
+}
+ttt_right = {
+    alpha1_right = (open,40),(open,21),(allow,17),(open,43),(allow,39),(close,43),(open,44),(deny,48),(close,21),(allow,40),(allow,44),(close,40),(deny,59),(close,16),(deny,42),(send,17)
+    alpha2_right = (open,40),(deny,21),(send,15)
+    alpha3_right = (allow,40),(send,39)
+    alpha4_right = (open,40),(allow,17),(send,37)
+}

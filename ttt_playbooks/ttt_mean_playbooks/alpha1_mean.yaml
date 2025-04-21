@@ -1,0 +1,345 @@
+#(open,39)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 39
+
+- name: vm2_open 1
+  hosts: vm2
+  become: yes
+  tasks:
+    - name: Start netcat listener
+      shell: nc -lk 12345 >> rm_12345_l.txt
+      async: 900
+      poll: 0
+      ignore_errors: true
+
+#(open,20)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 20
+
+- name: vm2_open 2
+  hosts: vm2
+  become: yes
+  tasks:
+    - name: Start netcat listener
+      shell: nc -lk 12345 >> rm_12345_l.txt
+      async: 900
+      poll: 0
+      ignore_errors: true
+
+#(allow,16)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 16
+
+- name: vm2_allow 3
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_allow
+    ignore_errors: yes
+    command: iptables -D INPUT -s 10.0.0.42 -j DROP
+
+#(open,42)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 42
+
+- name: vm2_open 4
+  hosts: vm2
+  become: yes
+  tasks:
+    - name: Start netcat listener
+      shell: nc -lk 12345 >> rm_12345_l.txt
+      async: 900
+      poll: 0
+      ignore_errors: true
+
+#(allow,38)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 38
+
+- name: vm2_allow 5
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_allow
+    ignore_errors: yes
+    command: iptables -D INPUT -s 10.0.0.42 -j DROP
+
+#(close,42)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 42
+
+- name: vm2_close 6
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_close
+    shell: "lsof -i :12345 -t"
+    register: nc_pid_1
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+  - name: vm2_close
+    shell: "kill -9 {{ nc_pid_0.stdout }}"
+    async: 900
+    poll: 0
+    ignore_errors: yes
+    when: nc_pid_1.stdout != ""
+
+#(open,43)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 43
+
+- name: vm2_open 7
+  hosts: vm2
+  become: yes
+  tasks:
+    - name: Start netcat listener
+      shell: nc -lk 12345 >> rm_12345_l.txt
+      async: 900
+      poll: 0
+      ignore_errors: true
+
+#(deny,46)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 46
+
+- name: vm2_deny 8
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_deny
+    command: iptables -C INPUT -s 10.0.0.42 -j DROP
+    register: rule_check0
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+  - name: vm2_deny
+    command: iptables -A INPUT -s 10.0.0.42 -j DROP
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+#(close,20)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 20
+
+- name: vm2_close 9
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_close
+    shell: "lsof -i :12345 -t"
+    register: nc_pid_1
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+  - name: vm2_close
+    shell: "kill -9 {{ nc_pid_0.stdout }}"
+    async: 900
+    poll: 0
+    ignore_errors: yes
+    when: nc_pid_1.stdout != ""
+
+#(allow,34)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 34
+
+- name: vm2_allow 10
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_allow
+    ignore_errors: yes
+    command: iptables -D INPUT -s 10.0.0.42 -j DROP
+
+#(allow,43)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 43
+
+- name: vm2_allow 11
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_allow
+    ignore_errors: yes
+    command: iptables -D INPUT -s 10.0.0.42 -j DROP
+
+#(close,39)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 39
+
+- name: vm2_close 12
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_close
+    shell: "lsof -i :12345 -t"
+    register: nc_pid_1
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+  - name: vm2_close
+    shell: "kill -9 {{ nc_pid_0.stdout }}"
+    async: 900
+    poll: 0
+    ignore_errors: yes
+    when: nc_pid_1.stdout != ""
+
+#(deny,54)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 54
+
+- name: vm2_deny 13
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_deny
+    command: iptables -C INPUT -s 10.0.0.42 -j DROP
+    register: rule_check0
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+  - name: vm2_deny
+    command: iptables -A INPUT -s 10.0.0.42 -j DROP
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+#(close,15)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 15
+
+- name: vm2_close 14
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_close
+    shell: "lsof -i :12345 -t"
+    register: nc_pid_1
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+  - name: vm2_close
+    shell: "kill -9 {{ nc_pid_0.stdout }}"
+    async: 900
+    poll: 0
+    ignore_errors: yes
+    when: nc_pid_1.stdout != ""
+
+#(deny,41)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 41
+
+- name: vm2_deny 15
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_deny
+    command: iptables -C INPUT -s 10.0.0.42 -j DROP
+    register: rule_check0
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+  - name: vm2_deny
+    command: iptables -A INPUT -s 10.0.0.42 -j DROP
+    async: 900
+    poll: 0
+    ignore_errors: yes
+
+#(send,16)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 16
+
+- name: vm1_send 16
+  hosts: vm1
+  tasks:
+  - name: vm1_send
+    shell: echo "Hello_0" | nc -w 2 10.0.0.51 12345
+    ignore_errors: yes

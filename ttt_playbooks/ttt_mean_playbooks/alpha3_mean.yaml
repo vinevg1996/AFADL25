@@ -1,0 +1,32 @@
+#(allow,34)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 34
+
+- name: vm2_allow 1
+  hosts: vm2
+  become: yes
+  tasks:
+  - name: vm2_allow
+    ignore_errors: yes
+    command: iptables -D INPUT -s 10.0.0.42 -j DROP
+
+#(send,38)
+- name: Wait
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait
+      pause:
+        seconds: 38
+
+- name: vm1_send 2
+  hosts: vm1
+  tasks:
+  - name: vm1_send
+    shell: echo "Hello_0" | nc -w 2 10.0.0.51 12345
+    ignore_errors: yes
