@@ -1,3 +1,5 @@
+from tfsm import *
+
 class TimedTransitionTour:
     def __init__(self, my_tfsm):
         self.template_ttt = list()
@@ -81,4 +83,32 @@ class TimedTransitionTour:
                     self.covered_trans[curr_tr.transition_name] = True
                     state = str(curr_tr.end_state)
             self.template_ttt.append(list(template_seq))
+        return
+
+    def derive_left_mean_right_ttts(self, my_tfsm, step):
+        ttt_left = list()
+        ttt_mean = list()
+        ttt_right = list()
+        for ttt_seq in self.template_ttt:
+            ttt_left_seq = TimedSequence([])
+            ttt_mean_seq = TimedSequence([])
+            ttt_right_seq = TimedSequence([])
+            for tran_name in ttt_seq:
+                tran = my_tfsm.transition_dict[tran_name]
+                timestamp_left = int(tran.time_guard[0]) + step
+                ttt_left_seq.append_to_timed_sequence(TimedSequence([(tran.input, timestamp_left)]))
+                timestamp_mean = (float(tran.time_guard[0]) + float(tran.time_guard[1])) / 2
+                ttt_mean_seq.append_to_timed_sequence(TimedSequence([(tran.input, timestamp_mean)]))
+                timestamp_right = int(tran.time_guard[1]) - step
+                ttt_right_seq.append_to_timed_sequence(TimedSequence([(tran.input, timestamp_right)]))
+            ttt_left.append(ttt_left_seq)
+            ttt_mean.append(ttt_mean_seq)
+            ttt_right.append(ttt_right_seq)
+        return (ttt_left, ttt_mean, ttt_right)
+
+    def print_ttt(self, ttt):
+        for ttt_seq in ttt:
+            for timed_input in ttt_seq.sequence:
+                print(timed_input, end='')
+            print()
         return
